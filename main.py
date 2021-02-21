@@ -5,8 +5,9 @@ from src.loads.TrainBase import TrainBase
 from src.loads.TestBase import TestBase
 
 from src.classifiers.Knn import Knn
+from src.classifiers.Wknn import Wknn
 
-trainPath = "bases/train/"
+trainPath = "bases/"
 testPath = "bases/test/"
 
 train = TrainBase(trainPath)
@@ -29,7 +30,7 @@ for trainNameFile, trainFile in train.getBases().items():
     
     start_time = time.time()
 
-    clf = Knn(trainFile, testFile, "LABEL", 1)
+    clf = Knn(trainFile, testFile, "LABEL", 30)
     dists = clf.getDistances()
     pointAcc = clf.getPointAccuracy()
     roomAcc = clf.getRoomAccuracy()
