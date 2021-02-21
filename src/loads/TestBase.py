@@ -4,7 +4,6 @@ from src.loads.Base import Base
 
 class TestBase(Base):
   
-  _baseNames = []
   def __init__(self, testath):
     super(TestBase, self).__init__(testath)
   

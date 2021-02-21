@@ -4,7 +4,6 @@ from src.loads.Base import Base
 
 class TrainBase(Base):
   
-  _baseNames = []
   def __init__(self, trainPath):
     super(TrainBase, self).__init__(trainPath)
 

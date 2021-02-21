@@ -8,7 +8,6 @@ from glob import glob
 class Base(object):
 
   __bases = None 
-  _baseNames = []
 
   def __init__(self, rootPath):
     pathFiles = self.__loadCsvFileNames(rootPath)
@@ -29,17 +28,16 @@ class Base(object):
       nameFile = self.__extractNameFile(pathFile)[0]
       file = self._loadCsvFile(pathFile)
       bases[nameFile] = file    
-      self._baseNames.append(nameFile)
     return bases
   
   def getBases(self):
     return self.__bases
   
   def getBasesName(self):
-    return self._baseNames
+    return list(self.__bases.keys())
   
   def getLabels(self, labelCol):
-    return self.__bases[self._baseNames[0]][labelCol].unique()
+    return self.__bases[self.getBasesName()[0]][labelCol].unique()
 
   def setLabels(self, labels, labelCol):
     bases = {}
