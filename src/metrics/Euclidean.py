@@ -28,6 +28,9 @@ class Euclidean:
 
   def getDistances(self):
     return self.__distances
+  
+  def getDistanceBetweenVectors(self, vectorA, vectorB):
+    return distance.cdist(vectorA, vectorB, 'euclidean')
 
 
 

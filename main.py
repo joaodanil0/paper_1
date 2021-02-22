@@ -6,8 +6,9 @@ from src.loads.TestBase import TestBase
 
 from src.classifiers.Knn import Knn
 from src.classifiers.Wknn import Wknn
+from src.classifiers.Pa import Pa
 
-trainPath = "bases/"
+trainPath = "bases/train/"
 testPath = "bases/test/"
 
 train = TrainBase(trainPath)
@@ -30,7 +31,7 @@ for trainNameFile, trainFile in train.getBases().items():
     
     start_time = time.time()
 
-    clf = Knn(trainFile, testFile, "LABEL", 30)
+    clf = Pa(trainFile, testFile, "LABEL", 0.01)
     dists = clf.getDistances()
     pointAcc = clf.getPointAccuracy()
     roomAcc = clf.getRoomAccuracy()
@@ -53,7 +54,7 @@ for trainNameFile, trainFile in train.getBases().items():
     totalTime += (end_time - start_time)
 
 aux = pd.DataFrame({"Files": nameFiles, "AVG error (m)": avgErrors, "Acc point (%)": pointAccs, "Acc room (%)":roomAccs})
-aux.to_csv("Results_knn.csv", index=False, float_format="%.2f")
+aux.to_csv("Results_Pa.csv", index=False, float_format="%.2f")
 print("Acabou em: %.2f" % totalTime)
 
 
