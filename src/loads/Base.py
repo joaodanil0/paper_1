@@ -13,8 +13,8 @@ class Base(object):
     pathFiles = self.__loadCsvFileNames(rootPath)
     self.__bases = self.__loadAllCsvFiles(pathFiles)
 
-  def __loadCsvFileNames(self, path):
-    return sorted(glob(path + "*.csv"))
+  def __loadCsvFileNames(self, path):    
+    return sorted(glob(path + '**/*.csv', recursive=True))
   
   def _loadCsvFile(self, pathFile):
     return pd.read_csv(pathFile)

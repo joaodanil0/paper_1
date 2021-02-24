@@ -10,6 +10,7 @@ class Classifier(object):
   _distances = None
   _predictions = None
   _realLabels = None
+  _dropedLines = []
  
   def _preProcess(self, train, test, labelCol, avgTrain=False):
 
@@ -36,6 +37,9 @@ class Classifier(object):
   
   def getPointAccuracy(self):
     return accuracy_score(self.getTrueLabels(), self.getPredictions())*100
+  
+  def getDropedLines(self):
+    return self._dropedLines
   
   def getRoomAccuracy(self):
     predRooms = self.__getRooms(self.getPredictions())

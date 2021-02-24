@@ -18,10 +18,17 @@ class Pa(Classifier):
     
     euclidean = Euclidean()    
 
-    predPos = self.__computePosition(xOff, yOff, xOn, wt, euclidean)  
-    realPos = euclidean.labelToPosition(yOn)
+    predPos, dropedLines = self.__computePosition(xOff, yOff, xOn, wt, euclidean)  
 
+    yOn = yOn.drop(dropedLines)
+    realPos = euclidean.labelToPosition(yOn)
+    predPos = np.delete(predPos, dropedLines, axis=0)
+
+    if(predPos.shape[0] == 0): 
+      self._distances = np.array([np.nan])
+      return
     euclidean.compute(realPos, predPos)
+    self._dropedLines = dropedLines
     self._distances = euclidean.getDistances()
     self._predictions = self.__getClosestLabel(predPos)
     self._realLabels = yOn
@@ -33,9 +40,10 @@ class Pa(Classifier):
     d_i = euclidean.getDistanceBetweenVectors(xOnStandardized, xOffStandardized)
     sum_d_i = self.__piecewiseInverse(d_i).sum(axis=1) 
     w_i = self.__divideMatrixColsByVector(self.__piecewiseInverse(d_i), sum_d_i)
-    w_th = self.__putZerosUnderThreshold(w_i, wt)
+    w_th, dropedLines = self.__putZerosUnderThreshold(w_i, wt)
 
     new_di = self.__multipliesMatrixColsByVector(w_th, sum_d_i)
+
     new_sum_d_i = new_di.sum(axis=1)
 
     """
@@ -61,12 +69,14 @@ class Pa(Classifier):
     
     positionsNumCols = positions.shape[1]
       
-    flatten_inv_new_di = self.__transformTo1dArray(new_di)
-    a = self.__multipliesMatrixColsByVector(positions, flatten_inv_new_di.T)
+    flatten_new_di = self.__transformTo1dArray(new_di)
+    a = self.__multipliesMatrixColsByVector(positions, flatten_new_di.T)
     a = self.__transformToMatrix(a, xOnNumRows,xOffNumRows,positionsNumCols)
 
     result = a.sum(axis=1)  
-    return np.reciprocal(new_sum_d_i)[:, np.newaxis] * result
+    p = np.reciprocal(new_sum_d_i)[:, np.newaxis] * result
+
+    return p, dropedLines
 
   def __standardizer(self, vector):
     return StandardScaler().fit_transform(vector.values.T).T
@@ -81,9 +91,10 @@ class Pa(Classifier):
     return np.reciprocal(matrix)
   
   def __putZerosUnderThreshold(self, matrix, threshold):    
-    newMatrix = np.where(matrix > threshold, matrix, 0)
+    newMatrix = np.where(matrix > threshold, matrix, 0)    
+    dropedLines = np.where(newMatrix.sum(axis=1) == 0)[0]
     newMatrix += np.finfo(float).eps # add infinitesimal value (close to zero)
-    return newMatrix
+    return newMatrix, dropedLines
   
   def __transformTo1dArray(self, matrix):
     return np.array(matrix).flatten() 
