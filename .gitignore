@@ -1,4 +1,5 @@
-*.csv
 *.pdf
 *.html
+*.zip
 __pycache__/
+.vscode

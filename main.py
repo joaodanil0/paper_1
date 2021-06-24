@@ -8,8 +8,8 @@ from src.classifiers.Knn import Knn
 from src.classifiers.Wknn import Wknn
 from src.classifiers.Pa import Pa
 
-trainPath = "bases/train/synth" + "/"
-testPath  = "bases/test/original_test" + "/"
+trainPath = "bases/train/real_samples" + "/"
+testPath  = "bases/test/real_samples" + "/"
 
 train = TrainBase(trainPath)
 test = TestBase(testPath)
@@ -32,13 +32,14 @@ for trainNameFile, trainFile in train.getBases().items():
     
     start_time = time.time()
 
-    clf = Pa(trainFile, testFile, "LABEL", 0.01)
+    # clf = Pa(trainFile, testFile.head(1), "LABEL", 0.01)
+    clf = Knn(trainFile, testFile, "LABEL", 18)
     dists = clf.getDistances()
     pointAcc = clf.getPointAccuracy()
     roomAcc = clf.getRoomAccuracy()
     dropedLines = clf.getDropedLines()
     
-    # pd.Series(dists).to_csv("results/Pa_best_synth_errors_wt_0.01.csv", index=False)
+    # pd.Series(dists).to_csv("results/Pa_best_synth_errors_wt_0.01_3Beacons.csv", index=False)
     avgError = dists.mean()
     stdError = dists.std()
 
@@ -67,7 +68,7 @@ aux = pd.DataFrame({
   "Acc point (%)": pointAccs, 
   "Acc room (%)":roomAccs,
   "Droped lines": dropeds})
-aux.to_csv("results/Results_Pa.csv", index=False, float_format="%.2f")
+# aux.to_csv("results/Results_Pa.csv", index=False, float_format="%.2f")
 print("Acabou em: %.2f" % totalTime)
 
 

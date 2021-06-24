@@ -27,6 +27,6 @@ for k, tick in enumerate(ticks):
       steps.append(dists.mean())
     trains[str(trainNameFile)] = steps
   dic_tick[str(tick)] = trains
-
+ 
 with open('results/Pa.json', 'w') as fp:
   json.dump(dic_tick, fp)
